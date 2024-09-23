@@ -26,6 +26,11 @@ function initializeGame() {
             boardDiv.appendChild(cellDiv);
         }
 
+        var elem = document.createElement("div");
+        elem.innerText = "O"
+        elem.classList.add("winText")
+        boardDiv.appendChild(elem)
+
         gameBoardElement.appendChild(boardDiv);
     }
 
@@ -54,11 +59,13 @@ function handleCellClick(event) {
     globalBoard[boardIndex][cellIndex] = currentPlayer;
     event.target.textContent = currentPlayer;
 
+    var won = checkWin(globalBoard[boardIndex]);
     if (checkWin(globalBoard[boardIndex])) {
-        markBoardWon(boardIndex);
+        markBoardWon(boardIndex, won == PLAYER_O);
     }
 
     currentBoard = parseInt(cellIndex);
+    
     if (boardStatus[currentBoard] !== null) {
         currentBoard = null; // Free choice
     }
@@ -72,6 +79,7 @@ function handleCellClick(event) {
     }
 }
 
+
 // Check if a player has won a small or large board
 function checkWin(board) {
     const winConditions = [
@@ -80,19 +88,37 @@ function checkWin(board) {
         [0, 4, 8], [2, 4, 6]             // Diagonals
     ];
 
-    return winConditions.some(combination => 
-        combination.every(index => board[index] === currentPlayer)
-    );
+    if ( winConditions.some(combination => 
+        combination.every(index => board[index] === PLAYER_O)
+    )) return PLAYER_O
+
+    else if ( winConditions.some(combination => 
+        combination.every(index => board[index] === PLAYER_X)
+    )) return PLAYER_X
+
+    else return false;
 }
 
 // Mark a small board as won
-function markBoardWon(boardIndex) {
+function markBoardWon(boardIndex, winOrLoss) {
     boardStatus[boardIndex] = currentPlayer;
     const boardDiv = gameBoardElement.children[boardIndex];
-    boardDiv.classList.add("won");
+    let winElem = boardDiv.querySelectorAll(".winText")[0];
+    if (winOrLoss) {
+        boardDiv.classList.add("won");
+        winElem.classList.add("won");
+        winElem.innerText = "O";
+    }
+    else {
+        boardDiv.classList.add("lost");
+        winElem.classList.add("lost");
+        winElem.innerText = "X";
+    }
+
+    winElem.style.display="flex"
+
     const cells = boardDiv.querySelectorAll(".cell");
     cells.forEach(cell => {
-        cell.classList.add("won");
         cell.removeEventListener("click", handleCellClick);
     });
 }
@@ -109,7 +135,28 @@ function updateStatus() {
     } else {
         gameStatusElement.textContent = `${currentPlayer}'s turn. Play in board ${currentBoard + 1}.`;
     }
+    markCurrentBoard(currentBoard)
+
 }
+
+function markCurrentBoard(index){
+    globalBoard.forEach((item, index) => {
+        let boardDiv = gameBoardElement.children[index];
+        if (boardDiv.classList.contains("current"))
+            boardDiv.classList.remove("current");
+    })
+
+    if (index === null) globalBoard.forEach((item, index) => {
+        let boardDiv = gameBoardElement.children[index];
+        boardDiv.classList.add("current");
+    })
+    else{
+        let boardDiv = gameBoardElement.children[index];
+        boardDiv.classList.add("current");
+    }
+    
+}
+
 
 // Disable all cells once the game is won
 function disableAllCells() {

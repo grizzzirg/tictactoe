@@ -1,11 +1,11 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f0f0f0;
+    background-color: #3f3f3f;
 }
 
 h1 {
-    color: #333;
+    color: #ffffff;
 }
 
 #game-board {
@@ -23,26 +23,64 @@ h1 {
     grid-template-rows: repeat(3, 1fr);
     grid-gap: 2px;
     background-color: #333;
+    opacity: 0.5;
+}
+
+.winText{
+    position: absolute;
+    display: none;
+    z-index: 100;
+    text-align: center;
+    width: 190px;
+    height: 190px;
+    align-items: center;
+    justify-content: center;
+    font-size: 200px;
+    color: white;
+    font-family:sans-serif
+
 }
 
 .cell {
     width: 60px;
     height: 60px;
-    background-color: #fff;
+    background-color: #6d6565;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 24px;
     cursor: pointer;
+
 }
 
 .cell:empty {
     cursor: pointer;
 }
 
-.won {
+.current .cell{
+    background-color: #a2a5c4;
+    color: #fff;
+}
+
+.current {
+    opacity: 1;
+}
+
+.won{
+    opacity: 0.5;
+}
+
+.won .cell{
     background-color: #4CAF50;
     color: #fff;
+}
+
+.lost {
+    opacity: 0.5;
+}
+
+.lost .cell{
+    background-color: red;
 }
 
 #game-status {
