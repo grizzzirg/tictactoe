@@ -6,6 +6,7 @@ body {
 
 h1 {
     color: #ffffff;
+    margin-bottom: 10px;
 }
 
 #game-board {
@@ -84,12 +85,64 @@ h1 {
 }
 
 #game-status {
-    margin-top: 20px;
+    margin-top: 0px;
     font-size: 18px;
+    color: white;
+    opacity: 0.5;
 }
 
 #restart-button {
-    padding: 10px 20px;
     font-size: 16px;
     margin-top: 10px;
+    border-radius: 30px;
+    background-color: rgba(0, 0, 0, 0);
+    color: white;
+    box-shadow: none;
+    cursor: pointer;
+    border: none;
+    text-decoration: underline;
+}
+
+#win-text {
+    position: absolute;
+    z-index: 5000;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    right: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+
+}
+
+#win-text p{
+    display: block;
+    font-size: 100px;
+    opacity: 1;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}   
+
+#win-text p.won {
+    color: green;
+
+}
+
+#win-text p.lost {
+    color: red;
+}
+
+#win-text button {
+    display: block;
+    color: #ffffff;
+    background-color: transparent;
+    border: none;
+    text-decoration: underline;
+    font-size: 25px;
+    opacity: 0.5;
+    cursor: pointer;
 }

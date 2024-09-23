@@ -8,6 +8,7 @@ let currentBoard = null;
 const gameBoardElement = document.getElementById("game-board");
 const gameStatusElement = document.getElementById("game-status");
 const restartButton = document.getElementById("restart-button");
+const restartButtonEnd = document.getElementById("restart-button-end")
 
 // Initialize the game board
 function initializeGame() {
@@ -71,7 +72,8 @@ function handleCellClick(event) {
     }
 
     if (checkWin(boardStatus)) {
-        gameStatusElement.textContent = `${currentPlayer} wins the game!`;
+        setGameWin(currentPlayer)
+        
         disableAllCells();
     } else {
         switchPlayer();
@@ -79,6 +81,15 @@ function handleCellClick(event) {
     }
 }
 
+function setGameWin(player){
+    gameStatusElement.textContent = `${player} wins the game!`;
+    let gameWinScreen = document.getElementById("win-text");
+    gameWinScreen.style.display = "grid";
+    let text = gameWinScreen.getElementsByTagName("p")[0];
+    text.textContent = `${player} wins the game!`;
+    if (player === PLAYER_O) text.classList.add("won")
+    else text.classList.add("lost")
+}
 
 // Check if a player has won a small or large board
 function checkWin(board) {
@@ -166,6 +177,11 @@ function disableAllCells() {
 
 // Restart game
 restartButton.addEventListener("click", initializeGame);
+restartButtonEnd.addEventListener("click", () => {
+    let gameWinScreen = document.getElementById("win-text");
+    gameWinScreen.style.display = "none";
+    initializeGame();
+})
 
 // Initialize the game on page load
 initializeGame();
