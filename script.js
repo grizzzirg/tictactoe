@@ -24,6 +24,8 @@ function initializeGame() {
             cellDiv.dataset.board = i;
             cellDiv.dataset.cell = j;
             cellDiv.addEventListener("click", handleCellClick);
+            cellDiv.addEventListener("mouseenter", onCellHover)
+            cellDiv.addEventListener("mouseleave", onCellUnHover)
             boardDiv.appendChild(cellDiv);
         }
 
@@ -42,13 +44,56 @@ function initializeGame() {
     updateStatus();
 }
 
+function onCellUnHover(event){
+    if (event.target.classList.contains("currentCell"))
+        event.target.classList.remove("currentCell");
+
+    globalBoard.forEach((item, index) => {
+        let boardDiv = gameBoardElement.children[index];
+        if (boardDiv.classList.contains("nextBoard"))
+            boardDiv.classList.remove("nextBoard");
+    })
+}
+
+function onCellHover(event){
+
+    const cellIndex = event.target.dataset.cell;
+    const boardIndex = event.target.dataset.board;
+
+    globalBoard.forEach((item, index) => {
+        let boardDiv = gameBoardElement.children[index];
+        if (boardDiv.classList.contains("nextBoard"))
+            boardDiv.classList.remove("nextBoard");
+    })
+
+    if ((currentBoard !== null && currentBoard !== parseInt(boardIndex)) || globalBoard[boardIndex][cellIndex] !== null) {
+        return;
+    }
+    
+    event.target.classList.add("currentCell");
+
+    let newBoard =  parseInt(cellIndex);
+    if (boardStatus[newBoard] !== null) {
+        newBoard = null; 
+    }
+
+    if (newBoard === null) globalBoard.forEach((item, index) => {
+        let boardDiv = gameBoardElement.children[index];
+        boardDiv.classList.add("nextBoard");
+    })
+    else{
+        let boardDiv = gameBoardElement.children[newBoard];
+        boardDiv.classList.add("nextBoard");
+    }
+
+}
+
 // Handle cell click
 function handleCellClick(event) {
     const boardIndex = event.target.dataset.board;
     const cellIndex = event.target.dataset.cell;
 
     if (currentBoard !== null && currentBoard !== parseInt(boardIndex)) {
-        // If the player tries to play in the wrong board
         return;
     }
 
@@ -58,7 +103,7 @@ function handleCellClick(event) {
     }
 
     globalBoard[boardIndex][cellIndex] = currentPlayer;
-    event.target.textContent = currentPlayer;
+    event.target.textContent = currentPlayer == PLAYER_O ? "O" : "❌";
 
     var won = checkWin(globalBoard[boardIndex]);
     if (checkWin(globalBoard[boardIndex])) {
@@ -146,6 +191,17 @@ function updateStatus() {
     } else {
         gameStatusElement.textContent = `${currentPlayer}'s turn. Play in board ${currentBoard + 1}.`;
     }
+
+    if (currentPlayer === PLAYER_O){
+        gameStatusElement.classList.add("playerO");
+        if (gameStatusElement.classList.contains("playerX"))
+            gameStatusElement.classList.remove("playerX")
+    }else if (currentPlayer === PLAYER_X){
+        gameStatusElement.classList.add("playerX");
+        if (gameStatusElement.classList.contains("playerO"))
+            gameStatusElement.classList.remove("playerO")
+    }
+
     markCurrentBoard(currentBoard)
 
 }
@@ -172,7 +228,11 @@ function markCurrentBoard(index){
 // Disable all cells once the game is won
 function disableAllCells() {
     const cells = document.querySelectorAll(".cell");
-    cells.forEach(cell => cell.removeEventListener("click", handleCellClick));
+    cells.forEach(cell => {
+        cell.removeEventListener("mouseenter", onCellHover)
+        cell.removeEventListener("mouseleave", onCellUnHover)
+        cell.removeEventListener("click", handleCellClick)
+    });
 }
 
 // Restart game
