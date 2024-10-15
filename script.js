@@ -1,5 +1,5 @@
-const PLAYER_X = "X";
-const PLAYER_O = "O";
+const PLAYER_X = "❌";
+const PLAYER_O = "⚪";
 let currentPlayer = PLAYER_X;
 let globalBoard = Array(9).fill(null).map(() => Array(9).fill(null));
 let boardStatus = Array(9).fill(null);
@@ -103,7 +103,7 @@ function handleCellClick(event) {
     }
 
     globalBoard[boardIndex][cellIndex] = currentPlayer;
-    event.target.textContent = currentPlayer == PLAYER_O ? "O" : "❌";
+    event.target.textContent = currentPlayer == PLAYER_O ? "⚪" : "❌";
 
     var won = checkWin(globalBoard[boardIndex]);
     if (checkWin(globalBoard[boardIndex])) {
